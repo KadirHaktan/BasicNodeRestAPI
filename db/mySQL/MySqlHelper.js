@@ -2,10 +2,10 @@ const mysql = require('mysql')
 const util = require('util')
 
 function makeDb() {
-    const host = 'localhost'
-    const user = 'root'
-    const password = ""
-    const database = 'clean-node-api'
+    const host = process.env.localhost
+    const user = process.env.user
+    const password = process.env.password
+    const database = process.env.database
 
     const con = mysql.createConnection({
         host,
