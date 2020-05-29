@@ -1,0 +1,97 @@
+const express = require('express')
+const bodyparser = require('body-parser')
+const dotenv=require('dotenv')
+
+
+const contactEndpointHandler = require('./contacts/index')
+const {authEndpointHandler}=require('./auth/index')
+const userEndPointHandler=require('./users/index')
+const {AdaptRequest,AuthAdaptRequest} = require('./helpers/adapt-request')
+
+const DecodeToken=require('./helpers/token')
+
+
+
+
+const app = express()
+app.use(bodyparser.json())
+
+
+
+
+dotenv.config({path:'./config/config.env'})
+
+
+app.get('/contacts/:id',DecodeToken(ContactController))
+app.all('/contacts',DecodeToken(ContactController))
+
+
+
+
+
+app.post('/users/register',UserController)
+app.all('/users',UserController)
+
+
+app.post('/auth/login',AuthController)
+app.get('/auth/getme',DecodeToken(AuthController))
+app.delete('/auth/logout',AuthController)
+
+app.all('/auth',AuthController)
+
+
+
+
+
+
+
+function ContactController(req, res) {
+    const httpRequest = AdaptRequest(req)
+    contactEndpointHandler(httpRequest).then(({headers,statusCode,data}) => {
+        res.set(headers).status(statusCode).send(data)       
+    }).catch(e =>res.status(500).json({
+        message:e.message
+    }).end())
+}
+
+function UserController(req, res) {
+    const httpRequest = AdaptRequest(req)
+    userEndPointHandler(httpRequest).then(({
+        headers,
+        statusCode,
+        data
+    }) => {
+        res
+            .set(headers)
+            .status(statusCode)
+            .send(data)
+    }).catch(e => res.status(e.statusCode||500).json({
+        message:e.message
+    }).end())
+}
+
+function AuthController(req, res) {
+    const httpRequest = AuthAdaptRequest(req)
+    authEndpointHandler(httpRequest).then(({
+        headers,
+        statusCode,
+        name,
+        options,
+        value,
+        data,
+    }) => {
+        res
+            .set(headers)
+            .status(statusCode)
+            .cookie(name,value,options)
+            .send(data)
+    }).catch(e => res.status(e.statusCode||500).json({
+        message:e.message
+    }).end())
+}
+
+
+
+
+
+app.listen(9090, () => console.log("9090 listen"))
