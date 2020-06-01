@@ -2,6 +2,8 @@ const makeHttpError = require('../helpers/make-http-error')
 const {MakeLogin,MakeLoginUser} = require('./auth')
 const CreateToken = require('../helpers/create-jwt')
 
+const {JWT_COOKIE_EXPIRE}=require('../config/config')
+
 function AuthEndpointHandler({authList}) {
 
     return async function handler(httpRequest){
@@ -84,7 +86,7 @@ function AuthEndpointHandler({authList}) {
         console.log(token)
 
         const options = {
-            expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000),
+            expires: new Date(Date.now() +JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000),
             httpOnly: true
         }
 

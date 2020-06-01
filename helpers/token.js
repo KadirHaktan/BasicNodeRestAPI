@@ -5,6 +5,8 @@ const {UnauthorizedError}=require('./error')
 const {authList}=require('../auth/index')
 const {ResponseHandler}=require('./try-catch-handler')
 
+const {JWT_SECRET_KEY}=require('../config/config')
+
 
     
 function DecodeToken(fn){
@@ -20,7 +22,7 @@ function DecodeToken(fn){
         }
     
         try{    
-            const decoded=jwt.verify(token,process.env.JWT_SECRET_KEY)
+            const decoded=jwt.verify(token,JWT_SECRET_KEY)
             const Id=decoded['0'].user[0].id
 
             httpRequest.user=await authList.findById(Id).then((data)=>{
