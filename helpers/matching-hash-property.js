@@ -3,7 +3,9 @@
 const bcrypt=require('bcryptjs')
 
 async function MatchHashProperty(p1,p2){
-    return await bcrypt.compare(p2,p1).catch(err=>{throw err})
+    const matching= await bcrypt.compare(p2,p1).catch(err=>{throw err})
+    return matching
+
 }
 
 module.exports=MatchHashProperty

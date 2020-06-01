@@ -44,20 +44,19 @@ function MakeLoginUser(user=requireParam('user'),password){
 
     return Object.freeze({validateUser})
     
-    function validate(user){
+    async function validate(user){
         ValidUser(user)
-        IsMatchPassword(MatchingHashProperty,user,password)
+        await IsMatchPassword(password)
         return {user}
         function ValidUser(user){
             if(!user){
                 throw new InvalidPropertyError('Invalid Credentials')
             }
-            
-
         }
 
-        function IsMatchPassword(IsMatch,user,password){
-            if(!IsMatch(user.password,password)){
+        async function IsMatchPassword(password){
+            const matching=await MatchingHashProperty(user.password,password)
+            if(!matching){
                 throw new InvalidPropertyError('Invalid Password')
             }
         }

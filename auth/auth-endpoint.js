@@ -30,7 +30,8 @@ function AuthEndpointHandler({authList}) {
         }
 
         const user = await authList.findByUserEmailQuery(email)
-        const validUser = MakeLoginUser(user, password).validateUser
+
+        const validUser = await MakeLoginUser(user[0], password).validateUser
 
         return SendTokenResponse(validUser,httpRequest)
     }
