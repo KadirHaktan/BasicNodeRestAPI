@@ -41,11 +41,20 @@ class UnauthorizedError extends Error{
             Error.captureStackTrace(this,UnauthorizedError)
         }
 
-    }
+    }   
+}
 
-    
+class NotFoundError extends Error{
+    constructor(message,statusCode=404){
+        super(message)
+        this.statusCode=statusCode
+
+        if(Error.captureStackTrace){
+            Error.captureStackTrace(this,NotFoundError)
+        }
+    }
 }
 
 
 
-module.exports={RequiredParameterError,InvalidPropertyError,UniqueConstraintError,UnauthorizedError}
+module.exports={RequiredParameterError,InvalidPropertyError,UniqueConstraintError,UnauthorizedError,NotFoundError}

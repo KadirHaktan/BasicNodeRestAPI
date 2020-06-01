@@ -6,6 +6,7 @@ const dotenv=require('dotenv')
 const contactEndpointHandler = require('./contacts/index')
 const {authEndpointHandler}=require('./auth/index')
 const userEndPointHandler=require('./users/index')
+const userContactEndPointHandler=require('./users-contacts/index')
 const {AdaptRequest,AuthAdaptRequest} = require('./helpers/adapt-request')
 
 const DecodeToken=require('./helpers/token')
@@ -40,7 +41,8 @@ app.delete('/auth/logout',AuthController)
 app.all('/auth',AuthController)
 
 
-
+app.get('/usercontacts/:id',DecodeToken(UserContactController))
+app.all('/usercontacts',DecodeToken(UserContactController))
 
 
 
@@ -57,6 +59,22 @@ function ContactController(req, res) {
 function UserController(req, res) {
     const httpRequest = AdaptRequest(req)
     userEndPointHandler(httpRequest).then(({
+        headers,
+        statusCode,
+        data
+    }) => {
+        res
+            .set(headers)
+            .status(statusCode)
+            .send(data)
+    }).catch(e => res.status(e.statusCode||500).json({
+        message:e.message
+    }).end())
+}
+
+function UserContactController(req, res) {
+    const httpRequest = AuthAdaptRequest(req)
+    userContactEndPointHandler(httpRequest).then(({
         headers,
         statusCode,
         data
