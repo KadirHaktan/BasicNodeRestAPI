@@ -33,8 +33,9 @@ function AuthEndpointHandler({authList}) {
 
         const user = await authList.findByUserEmailQuery(email)
         const validUser= await MakeLoginUser(user[0], password).validateUser
+        const {id,userName}=validUser.user
 
-        return SendTokenResponse(validUser,httpRequest)
+        return SendTokenResponse({id,userName},httpRequest)
     }
 
     async function LogOut(httpRequest){

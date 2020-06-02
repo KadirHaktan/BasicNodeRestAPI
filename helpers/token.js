@@ -25,7 +25,7 @@ const  {JWT_SECRET_KEY}=require('../config/config')
         
         try{ 
             const decoded=jwt.verify(token,JWT_SECRET_KEY)
-            const Id=decoded['0'].user.id 
+            const Id=decoded['0'].id 
 
             httpRequest.user=await authList.findById(Id).then((data)=>{
                 return data[0]
