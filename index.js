@@ -36,7 +36,7 @@ app.delete('/auth/logout',AuthController)
 app.all('/auth',AuthController)
 
 
-app.get('/usercontacts/:id',DecodeToken(UserContactController))
+app.get('/usercontacts/:contactId',DecodeToken(UserContactController))
 app.all('/usercontacts',DecodeToken(UserContactController))
 
 
