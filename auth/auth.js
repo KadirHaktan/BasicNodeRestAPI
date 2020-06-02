@@ -44,7 +44,7 @@ function MakeLoginUser(user=requireParam('user'),password){
 
     return Object.freeze({validateUser})
     
-    async function validate(user){
+     async function validate(user){
         ValidUser(user)
         await IsMatchPassword(password)
         return {user}

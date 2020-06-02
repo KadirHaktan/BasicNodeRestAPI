@@ -32,8 +32,7 @@ function AuthEndpointHandler({authList}) {
         }
 
         const user = await authList.findByUserEmailQuery(email)
-
-        const validUser = await MakeLoginUser(user[0], password).validateUser
+        const validUser= await MakeLoginUser(user[0], password).validateUser
 
         return SendTokenResponse(validUser,httpRequest)
     }
@@ -45,13 +44,15 @@ function AuthEndpointHandler({authList}) {
             httpOnly:true
 
         }
+
+
         return{
             headers:{
                 'Content-Type':'application/json'
             },
             statusCode:200,
             name:'t',
-            value:none,
+            value:'none',
             options,
             data:JSON.stringify({}),
             success:true

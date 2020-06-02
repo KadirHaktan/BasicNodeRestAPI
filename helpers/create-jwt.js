@@ -11,3 +11,4 @@ function CreateJWT(...infos){
 }
 
 module.exports=CreateJWT
+

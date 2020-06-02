@@ -1,13 +1,12 @@
 const express = require('express')
 const bodyparser = require('body-parser')
-const dotenv=require('dotenv')
 
 
 const contactEndpointHandler = require('./contacts/index')
 const {authEndpointHandler}=require('./auth/index')
 const userEndPointHandler=require('./users/index')
 const userContactEndPointHandler=require('./users-contacts/index')
-const {AdaptRequest,AuthAdaptRequest} = require('./helpers/adapt-request')
+const {AuthAdaptRequest} = require('./helpers/adapt-request')
 
 const DecodeToken=require('./helpers/token')
 
@@ -17,10 +16,6 @@ const DecodeToken=require('./helpers/token')
 const app = express()
 app.use(bodyparser.json())
 
-
-
-
-dotenv.config({path:'./config/config.env'})
 
 
 app.get('/contacts/:id',DecodeToken(ContactController))
@@ -48,7 +43,7 @@ app.all('/usercontacts',DecodeToken(UserContactController))
 
 
 function ContactController(req, res) {
-    const httpRequest = AdaptRequest(req)
+    const httpRequest = AuthAdaptRequest(req)
     contactEndpointHandler(httpRequest).then(({headers,statusCode,data}) => {
         res.set(headers).status(statusCode).send(data)       
     }).catch(e =>res.status(500).json({
@@ -57,7 +52,7 @@ function ContactController(req, res) {
 }
 
 function UserController(req, res) {
-    const httpRequest = AdaptRequest(req)
+    const httpRequest = AuthAdaptRequest(req)
     userEndPointHandler(httpRequest).then(({
         headers,
         statusCode,
