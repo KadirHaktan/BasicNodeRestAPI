@@ -1,7 +1,7 @@
 
 # Basic-REST-API From NodeJS
 
-- Dont' forget to run npm install and npm install express,...
+- Dont' forget to run npm install
 
 - Inspired By DevMastery Designing a Clean REST API with Node.JS(Express+Mongo)
 
