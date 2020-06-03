@@ -1,51 +1,29 @@
+const requireParam = require('../helpers/require-param')
 
-const requireParam=require('../helpers/require-param')
-
-const {NotFoundError,InvalidPropertyError}=require('../helpers/error')
+const {InvalidPropertyError} = require('../helpers/error')
 
 
-function MakeUsersContactID(usersContactIDinfo=requireParam('usersContactIDinfo'))
-{
-    const validateUserContact=validate(usersContactIDinfo)
-    
+function MakeUsersContactInfo({firstName = requireParam('firstName'),...otherInfo}) {
+    const validateUserContact = validate()
 
-    return Object.freeze({validateUserContact})
+    return Object.freeze({
+        validateUserContact
+    })
 
-    function validate({contactId=requireParam('contactId')
-    ,...otherInfo}={}){
-        NullControlToContactId(contactId)
-
-        return {contactId,...otherInfo}
+    function validate() {
+        validateName("firstName", firstName)
+        return {
+            firstName,...otherInfo}
     }
 
-    function NullControlToContactId(contactId){
-        if(!contactId){
-            throw new NotFoundError("That contact could not find")
+    function validateName(label, name) {
+        if (!name) {
+            throw new InvalidPropertyError(`Invalid ${label}`)
         }
     }
 
 }
 
-function MakeUsersContactInfo(userContactinfo=requireParam('userContactinfo'))
-{
-    const validateUserContact=validate(userContactinfo)
-    
-
-    return Object.freeze({validateUserContact})
-
-    function validate({firstName=requireParam('firstName')
-    ,...otherInfo}={}){
-        validateName("firstName",firstName)
-
-        return {firstName,...otherInfo}
-    }
-
-    function validateName(label,name){
-        if(!name){
-            throw new InvalidPropertyError(label)
-        }
-    }
-
+module.exports = {
+    MakeUsersContactInfo
 }
-
-module.exports={MakeUsersContactID,MakeUsersContactInfo}
