@@ -1,14 +1,20 @@
 
 const MakeUser = require('./user')
 const HashingProperty=require('../helpers/hashing-property')
-
+const makeHttpError=require('../helpers/make-http-error')
 
 function UserEndpointHandler({userList}) {
 
     return async function handler(httpRequest){
         switch (httpRequest.method){
             case 'POST':
-                return Register(httpRequest)           
+                return Register(httpRequest)  
+                
+            default:
+                return makeHttpError({
+                    statusCode:503,
+                    ErrorMessage:'Method not allowed'
+                })
         }
     }
 

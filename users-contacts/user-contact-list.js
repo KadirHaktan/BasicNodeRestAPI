@@ -2,7 +2,8 @@ function MakeUserContactsList({database}){
     return Object.freeze({
         GetUserContacts,
         AddContactForUser,
-        GetContactIDByName
+        GetContactIDByName,
+        GetUserContactsById
     })
 
 
@@ -31,19 +32,16 @@ function MakeUserContactsList({database}){
 
 
     async function GetContactIDByName(name){
-        const sql=`SELECT c.id FROM usercontact uc
-        INNER JOIN user u 
-        ON uc.user_id=u.id
-        INNER JOIN contact c 
-        ON uc.contact_id=c.id
-        WHERE c.firstName='${name}'`
-
+        const sql=`SELECT contact.id FROM contact WHERE contact.firstName='${name}'`
+        console.log(sql)
         return ExecuteQuery(sql)
+       
     }
 
     async function AddContactForUser(userId,contactId){
         const sql=`INSERT INTO usercontact (user_id,contact_id) VALUES(${userId},${contactId})`
-        return ExecuteQuery(sql)
+        const result=ExecuteQuery(sql)
+        return result
     }
 
 

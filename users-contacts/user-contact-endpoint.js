@@ -1,19 +1,18 @@
-
 const makeHttpError = require('../helpers/make-http-error')
-const {MakeUsersContactID,MakeUsersContactInfo} = require('./user-contact')
+const {MakeUsersContactInfo} = require('./user-contact')
 
 
 
 function UserContactEndpointHandler({
-    usercontactList
+    userContactList
 }) {
     return async function handle(httpRequest) {
         switch (httpRequest.method) {
             case 'GET':
                 return GetUserContects(httpRequest)
 
-            case 'POST':
-                return PostUserContect(httpRequest)
+                case 'POST':
+                     return PostUserContect(httpRequest)
 
             default:
                 return makeHttpError({
@@ -24,12 +23,16 @@ function UserContactEndpointHandler({
     }
 
     async function GetUserContects(httpRequest) {
-        const {id} = httpRequest.user
+        const {
+            id
+        } = httpRequest.user
 
-        const {contactId}=httpRequest.pathParams||{}
-    
-        const results = contactId? await usercontactList.GetUserContactsById(id,contactId):
-        await usercontactList.GetUserContacts(id)
+        const {
+            contactId
+        } = httpRequest.pathParams || {}
+
+        const results = contactId ? await userContactList.GetUserContactsById(id, contactId) :
+            await userContactList.GetUserContacts(id)
         return {
             headers: {
                 'Content-Type': 'application/json'
@@ -43,14 +46,15 @@ function UserContactEndpointHandler({
 
     async function PostUserContect(httpRequest) {
 
-        const contact = httpRequest.body
-        const user=httpRequest.user
-        const {firstName} =MakeUsersContactInfo(contact).validateUserContact
-        const {id}=MakeUsersContactID(user).validateUserContact
+        const {id,userName} = httpRequest.user
 
-        const contactId=await usercontactList.GetContactIDByName(firstName)
+        const {firstName} = MakeUsersContactInfo(httpRequest.body).validateUserContact
 
-        await usercontactList.AddContactForUser(id,contactId)
+        const contactIdResult = await userContactList.GetContactIDByName(firstName)
+        const contactId=contactIdResult[0].id
+        
+
+        await userContactList.AddContactForUser(id,contactId)
 
         return {
             headers: {
@@ -59,8 +63,8 @@ function UserContactEndpointHandler({
             statusCode: 200,
             data: JSON.stringify({
                 data: {
-                    userName:user.userName,
-                    contactFirstName:firstName,      
+                    contactFirstName: firstName,
+                    userName
                 }
             })
         }
