@@ -1,16 +1,14 @@
 
-const jwt=require('jsonwebtoken')
 
 const {UnauthorizedError}=require('./error')
 const {authList}=require('../auth/index')
 const {ResponseHandler}=require('./try-catch-handler')
-
 const  {JWT_SECRET_KEY}=require('../config/config')
 
 
 
     
- function DecodeToken(fn){
+ function VerifyToken(fn,jwt){
 
     const Function= ResponseHandler(async(httpRequest,httpResponse,...otherParameters)=>{
         let token
@@ -21,19 +19,17 @@ const  {JWT_SECRET_KEY}=require('../config/config')
         if(!token){          
            throw new UnauthorizedError('Not authorized to access')         
         }
-
-        
         try{ 
             const decoded=jwt.verify(token,JWT_SECRET_KEY)
-            const Id=decoded['0'].id 
-
-            httpRequest.user=await authList.findById(Id).then((data)=>{
+            const {id}=decoded.user
+            httpRequest.user=await authList.findById(id).then((data)=>{
                 return data[0]
             })
 
             return fn(httpRequest,httpResponse,...otherParameters)
       
         }catch(e){
+         
            throw new UnauthorizedError(`Not authorized to access=>${e.message}`)
         }
     })
@@ -50,4 +46,4 @@ const  {JWT_SECRET_KEY}=require('../config/config')
 
 
 
-module.exports=DecodeToken
+module.exports={VerifyToken}

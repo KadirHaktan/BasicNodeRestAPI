@@ -1,14 +1,17 @@
 const express = require('express')
 const bodyparser = require('body-parser')
+let jwt=require('jsonwebtoken')
+
 
 
 const contactEndpointHandler = require('./contacts/index')
 const {authEndpointHandler}=require('./auth/index')
 const userEndPointHandler=require('./users/index')
 const userContactEndPointHandler=require('./users-contacts/index')
-const {AuthAdaptRequest} = require('./helpers/adapt-request')
 
-const DecodeToken=require('./helpers/token')
+
+const {AuthAdaptRequest} = require('./helpers/adapt-request')
+const {VerifyToken}=require('./helpers/token')
 
 
 
@@ -18,8 +21,8 @@ app.use(bodyparser.json())
 
 
 
-app.get('/contacts/:id',DecodeToken(ContactController))
-app.all('/contacts',DecodeToken(ContactController))
+app.get('/contacts/:id',VerifyToken(ContactController,jwt))
+app.all('/contacts',VerifyToken(ContactController,jwt))
 
 
 
@@ -30,14 +33,14 @@ app.all('/users',UserController)
 
 
 app.post('/auth/login',AuthController)
-app.get('/auth/getme',DecodeToken(AuthController))
+app.get('/auth/getme',VerifyToken(AuthController,jwt))
 app.delete('/auth/logout',AuthController)
 
 app.all('/auth',AuthController)
 
 
-app.get('/usercontacts/:contactId',DecodeToken(UserContactController))
-app.all('/usercontacts',DecodeToken(UserContactController))
+app.get('/usercontacts/:contactId',VerifyToken(UserContactController,jwt))
+app.all('/usercontacts',VerifyToken(UserContactController,jwt))
 
 
 

@@ -38,7 +38,7 @@ function MakeLogin(loginInfo = requireParam('loginInfo')) {
   
 }
 
-function MakeLoginUser(user=requireParam('user'),password){
+function MakeLoginUser(user=requireParam('user'),password,bcrypt){
 
     const validateUser=validate(user)
 
@@ -46,7 +46,7 @@ function MakeLoginUser(user=requireParam('user'),password){
     
      async function validate(user){
         ValidUser(user)
-        await IsMatchPassword(password)
+        await IsMatchPassword(password,bcrypt)
         return {user}
         function ValidUser(user){
             if(!user){
@@ -54,8 +54,9 @@ function MakeLoginUser(user=requireParam('user'),password){
             }
         }
 
-        async function IsMatchPassword(password){
-            const matching=await MatchingHashProperty(user.password,password)
+        async function IsMatchPassword(otherPassword,bcrypt){
+            const {password}=user
+            const matching=await MatchingHashProperty(bcrypt,password,otherPassword)
             if(!matching){
                 throw new InvalidPropertyError('Invalid Password')
             }

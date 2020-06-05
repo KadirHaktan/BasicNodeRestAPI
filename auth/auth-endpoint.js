@@ -4,7 +4,7 @@ const CreateToken = require('../helpers/create-jwt')
 
 const {JWT_COOKIE_EXPIRE}=require('../config/config')
 
-function AuthEndpointHandler({authList}) {
+function AuthEndpointHandler({authList,jwt,bcrypt}) {
 
     return async function handler(httpRequest){
         switch (httpRequest.method){
@@ -31,8 +31,10 @@ function AuthEndpointHandler({authList}) {
             })
         }
 
-        const user = await authList.findByUserEmailQuery(email)
-        const validUser= await MakeLoginUser(user[0], password).validateUser
+        let user = await authList.findByUserEmailQuery(email)    
+        user=user[0]   
+        
+        const validUser= await MakeLoginUser(user,password,bcrypt).validateUser
         const {id,userName}=validUser.user
 
         return SendTokenResponse({id,userName},httpRequest)
@@ -83,7 +85,7 @@ function AuthEndpointHandler({authList}) {
 
 
     function SendTokenResponse(user,httpRequest){
-        const token = CreateToken(user)
+        const token = CreateToken({jwt,user})
 
         console.log(token)
 
