@@ -3,7 +3,7 @@ const MakeUser = require('./user')
 const HashingProperty=require('../helpers/hashing-property')
 const makeHttpError=require('../helpers/make-http-error')
 
-function UserEndpointHandler({userList}) {
+function UserEndpointHandler({userList,bcrypt}) {
 
     return async function handler(httpRequest){
         switch (httpRequest.method){
@@ -23,7 +23,7 @@ function UserEndpointHandler({userList}) {
 
         let {userName,password,email}=MakeUser(httpRequest.body).normalizeUser
 
-        password=await HashingProperty(password)
+        password=await HashingProperty({bcrypt,password})
 
         await userList.AddUser({userName,email,password})
 

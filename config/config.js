@@ -6,7 +6,7 @@ const configurationInfos={
     host:"your host",
     user:"your user",
     password:"your password",
-    database:"your db"
+    database:"your database"
 }
 
 module.exports=configurationInfos
